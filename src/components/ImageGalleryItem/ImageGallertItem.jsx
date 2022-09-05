@@ -1,43 +1,33 @@
 import { SCItem, SCImage } from './ImageGalleryItem.styled';
 import Modal from 'components/Modal/Modal';
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { useState } from 'react';
 
-class ImageGalleryItem extends Component {
-  state = {
-    isOpenModal: false,
+function ImageGalleryItem({ onClick, galleryList, imageURL }) {
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const toggleModal = () => {
+    setIsOpenModal(isOpenModal => !isOpenModal);
   };
 
-  isOpenModal = () => {
-    this.setState(({ isOpenModal }) => ({
-      isOpenModal: !isOpenModal,
-    }));
-  };
-
-  render() {
-    const { galleryList } = this.props;
-
-    return (
-      <>
-        {galleryList.map(({ id, webformatURL, largeImageURL }) => {
-          return (
-            <SCItem
-              key={id}
-              onClick={() => {
-                this.props.onClick(largeImageURL);
-                this.isOpenModal();
-              }}
-            >
-              <SCImage src={webformatURL} />
-            </SCItem>
-          );
-        })}
-        {this.state.isOpenModal && (
-          <Modal src={this.props.imageURL} onClose={this.isOpenModal} />
-        )}
-      </>
-    );
-  }
+  return (
+    <>
+      {galleryList.map(({ id, webformatURL, largeImageURL }) => {
+        return (
+          <SCItem
+            key={id}
+            onClick={() => {
+              onClick(largeImageURL);
+              toggleModal();
+            }}
+          >
+            <SCImage src={webformatURL} />
+          </SCItem>
+        );
+      })}
+      {isOpenModal && <Modal src={imageURL} onClose={toggleModal} />}
+    </>
+  );
 }
 
 ImageGalleryItem.propType = {

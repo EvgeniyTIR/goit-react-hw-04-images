@@ -1,39 +1,34 @@
 import { SCoverlay, SCmodal } from './Modal.styled';
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { useEffect } from 'react';
 
-class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-    window.addEventListener('click', this.handleBackdropClick);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-    window.removeEventListener('click', this.handleBackdropClick);
-  }
-
-  handleKeyDown = e => {
+function Modal({ onClose, src }) {
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('click', handleBackdropClick);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('click', handleBackdropClick);
+    };
+  });
+  const handleKeyDown = e => {
     if (e.code === 'Escape') {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  handleBackdropClick = e => {
+  const handleBackdropClick = e => {
     if (e.target === e.currentTarget) {
-      this.props.onClose();
+      onClose();
     }
   };
-
-  render() {
-    return (
-      <SCoverlay onClick={this.handleBackdropClick}>
-        <SCmodal>
-          <img src={this.props.src} alt="" />
-        </SCmodal>
-      </SCoverlay>
-    );
-  }
+  return (
+    <SCoverlay onClick={handleBackdropClick}>
+      <SCmodal>
+        <img src={src} alt="" />
+      </SCmodal>
+    </SCoverlay>
+  );
 }
 
 export default Modal;
